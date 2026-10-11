@@ -1,0 +1,16 @@
+/vendor/
+/node_modules/
+.env
+/storage/cache/*
+!/storage/cache/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/sessions/*
+!/storage/sessions/.gitkeep
+/public/uploads/*
+!/public/uploads/.gitkeep
+/public/assets/theme/*.css
+/public/assets/theme/*.js
+/public/assets/admin/*.css
+.DS_Store
+Thumbs.db

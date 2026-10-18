@@ -41,6 +41,11 @@ $router->group('/admin', function (Router $router) {
     $router->get('/users', [UsersController::class, 'index'], [[CapabilityMiddleware::class, 'manage_users']]);
     $router->post('/users', [UsersController::class, 'store'], [CsrfMiddleware::class, [CapabilityMiddleware::class, 'manage_users']]);
     $router->post('/users/{id}/delete', [UsersController::class, 'destroy'], [CsrfMiddleware::class, [CapabilityMiddleware::class, 'manage_users']]);
+    $router->get('/users/{id}/edit', [UsersController::class, 'edit'], [[CapabilityMiddleware::class, 'manage_users']]);
+    $router->post('/users/{id}', [UsersController::class, 'update'], [CsrfMiddleware::class, [CapabilityMiddleware::class, 'manage_users']]);
+
+    $router->get('/profile', [UsersController::class, 'profile']);
+    $router->post('/profile', [UsersController::class, 'updateProfile'], [CsrfMiddleware::class]);
 
     $router->get('/plugins', [PluginsController::class, 'index'], [[CapabilityMiddleware::class, 'manage_plugins']]);
     $router->post('/plugins/{slug}/activate', [PluginsController::class, 'activate'], [CsrfMiddleware::class, [CapabilityMiddleware::class, 'manage_plugins']]);

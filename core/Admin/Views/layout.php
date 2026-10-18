@@ -112,6 +112,7 @@ $icon = fn (string $name, string $class = 'h-5 w-5') => $this->fetch('admin::par
                             <span class="text-gray-400"><?= $icon('chevron-down', 'h-4 w-4') ?></span>
                         </summary>
                         <div class="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-gray-100 bg-white py-2 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+                            <a href="/admin/profile" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-slate-800"><?= $icon('users', 'h-4 w-4') ?> Mi perfil</a>
                             <a href="/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-slate-800"><?= $icon('globe', 'h-4 w-4') ?> Ver sitio</a>
                             <?php if ($currentUser && $currentUser->can('manage_options')): ?>
                                 <a href="/admin/settings" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-slate-800"><?= $icon('settings', 'h-4 w-4') ?> Ajustes</a>

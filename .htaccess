@@ -1,0 +1,27 @@
+# Para hostings donde no se puede cambiar la raíz del documento (cPanel: public_html).
+# Sube el proyecto completo a public_html: todas las peticiones se envían a /public
+# y el resto de carpetas (.env, vendor, core, config, storage…) queda inaccesible.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Forzar HTTPS (descomenta cuando el certificado SSL esté activo)
+    # RewriteCond %{HTTPS} off
+    # RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Todo lo que no esté ya dentro de /public se sirve desde /public
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Protección extra si mod_rewrite no estuviera disponible
+<IfModule !mod_rewrite.c>
+    Require all denied
+</IfModule>
+
+<FilesMatch "^\.(env|git)|\.(lock|json|md|sql|log)$|^(composer|package)">
+    Require all denied
+</FilesMatch>

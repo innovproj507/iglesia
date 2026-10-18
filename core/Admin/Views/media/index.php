@@ -1,36 +1,47 @@
-<?php $this->layout('admin::layout', ['title' => $title, 'currentUser' => $currentUser, 'menuItems' => $menuItems, 'activeMenu' => $activeMenu]) ?>
+<?php $this->layout('admin::layout', ['title' => $title, 'currentUser' => $currentUser, 'menuItems' => $menuItems, 'activeMenu' => $activeMenu, 'eyebrow' => 'Biblioteca']) ?>
+<?php $icon = fn (string $name, string $class = 'h-5 w-5') => $this->fetch('admin::partials/icon', ['name' => $name, 'class' => $class]); ?>
 
-<form method="post" action="/admin/media" enctype="multipart/form-data" class="bg-white rounded-lg shadow p-5 mb-6 flex items-end gap-3">
+<form method="post" action="/admin/media" enctype="multipart/form-data" class="card mb-6 grid gap-4 p-5 md:grid-cols-[1fr_1fr_auto] md:items-end">
     <?= csrf_field() ?>
-    <div class="flex-1">
-        <label class="block text-sm font-medium mb-1">Archivo</label>
-        <input type="file" name="file" required class="w-full text-sm">
+    <label class="flex cursor-pointer items-center gap-4 rounded-2xl border-2 border-dashed border-gray-200 px-5 py-4 transition hover:border-brand-400 hover:bg-brand-50/40 dark:border-slate-700 dark:hover:bg-slate-800">
+        <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10"><?= $icon('upload') ?></span>
+        <span class="min-w-0">
+            <span class="block text-sm font-bold text-gray-900 dark:text-white">Elegir archivo</span>
+            <span id="file-name" class="block truncate text-xs text-gray-400">Imágenes, audio, video o PDF · máx. 20 MB</span>
+        </span>
+        <input type="file" name="file" required class="sr-only" onchange="document.getElementById('file-name').textContent = this.files[0]?.name || ''">
+    </label>
+    <div>
+        <label class="label">Texto alternativo</label>
+        <input type="text" name="alt_text" placeholder="Describe la imagen" class="input">
     </div>
-    <div class="flex-1">
-        <label class="block text-sm font-medium mb-1">Texto alternativo</label>
-        <input type="text" name="alt_text" class="w-full border rounded px-3 py-2 text-sm">
-    </div>
-    <button type="submit" class="bg-brand-700 text-white px-4 py-2 rounded text-sm hover:bg-brand-800">Subir</button>
+    <button type="submit" class="btn-primary"><?= $icon('upload', 'h-4 w-4') ?> Subir</button>
 </form>
 
-<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
     <?php foreach ($items as $item): ?>
-        <div class="bg-white rounded-lg shadow p-2 text-center">
-            <?php if (str_starts_with($item['mime_type'], 'image/')): ?>
-                <img src="/<?= $this->e($item['file_path']) ?>" class="w-full h-24 object-cover rounded mb-2" alt="<?= $this->e($item['alt_text'] ?? '') ?>">
-            <?php else: ?>
-                <div class="w-full h-24 bg-gray-100 rounded mb-2 flex items-center justify-center text-xs text-gray-500">
-                    <?= $this->e($item['mime_type']) ?>
+        <div class="card group overflow-hidden">
+            <div class="relative aspect-square bg-gray-100 dark:bg-slate-800">
+                <?php if (str_starts_with($item['mime_type'], 'image/')): ?>
+                    <img src="/<?= $this->e($item['file_path']) ?>" class="h-full w-full object-cover" alt="<?= $this->e($item['alt_text'] ?? '') ?>" loading="lazy">
+                <?php else: ?>
+                    <span class="grid h-full w-full place-items-center text-gray-400"><?= $icon('file', 'h-10 w-10') ?></span>
+                <?php endif; ?>
+                <div class="absolute inset-0 flex items-end justify-end gap-1 bg-gradient-to-t from-black/50 to-transparent p-2 opacity-0 transition group-hover:opacity-100">
+                    <button type="button" onclick="navigator.clipboard.writeText('/<?= $this->e($item['file_path']) ?>'); this.textContent='¡Copiado!'" class="rounded-lg bg-white/90 px-2.5 py-1.5 text-[11px] font-bold text-gray-800">Copiar URL</button>
+                    <form method="post" action="/admin/media/<?= (int) $item['id'] ?>/delete" onsubmit="return confirm('¿Eliminar este archivo?')">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="grid h-7 w-7 place-items-center rounded-lg bg-white/90 text-red-500" aria-label="Eliminar"><?= $icon('trash', 'h-4 w-4') ?></button>
+                    </form>
                 </div>
-            <?php endif; ?>
-            <div class="text-xs truncate mb-2"><?= $this->e($item['file_name']) ?></div>
-            <form method="post" action="/admin/media/<?= (int) $item['id'] ?>/delete" onsubmit="return confirm('¿Eliminar?')">
-                <?= csrf_field() ?>
-                <button type="submit" class="text-red-600 text-xs hover:underline">Eliminar</button>
-            </form>
+            </div>
+            <div class="p-3">
+                <p class="truncate text-xs font-semibold text-gray-800 dark:text-slate-200"><?= $this->e($item['file_name']) ?></p>
+                <p class="text-[11px] text-gray-400"><?= number_format(($item['size'] ?? 0) / 1024, 0) ?> KB</p>
+            </div>
         </div>
     <?php endforeach; ?>
     <?php if (empty($items)): ?>
-        <p class="text-gray-400 col-span-full text-center py-6">Sin archivos todavía.</p>
+        <p class="col-span-full py-16 text-center text-gray-400">Sin archivos todavía.</p>
     <?php endif; ?>
 </div>

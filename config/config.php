@@ -18,6 +18,7 @@ return [
     'app' => [
         'key' => $_ENV['APP_KEY'] ?? '',
         'url' => $_ENV['APP_URL'] ?? 'http://iglesia.test',
+        'timezone' => $_ENV['APP_TIMEZONE'] ?? 'America/Panama',
     ],
     'db' => [
         'host' => $_ENV['DB_HOST'] ?? '127.0.0.1',

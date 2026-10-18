@@ -5,3 +5,69 @@
 [x-cloak] {
     display: none !important;
 }
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        font-variant-numeric: lining-nums;
+    }
+
+    /* Accesibilidad: botón "AA" amplía el texto de todo el sitio */
+    html.text-lg-mode {
+        font-size: 112.5%;
+    }
+
+    :focus-visible {
+        @apply outline-none ring-2 ring-brand-400 ring-offset-2;
+    }
+}
+
+@layer components {
+    .container-site {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition duration-200;
+    }
+
+    .btn-primary {
+        @apply btn bg-brand-500 text-white shadow-lg shadow-brand-500/25 hover:bg-brand-600 hover:-translate-y-0.5;
+    }
+
+    .btn-outline {
+        @apply btn border-2 border-white/80 text-white hover:bg-white hover:text-brand-800;
+    }
+
+    .btn-ghost {
+        @apply btn border-2 border-brand-500 text-brand-600 hover:bg-brand-500 hover:text-white;
+    }
+
+    .eyebrow {
+        @apply inline-block text-xs font-bold uppercase tracking-[0.2em] text-brand-500;
+    }
+
+    .section-title {
+        @apply text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight;
+    }
+
+    /* Revelado al hacer scroll (ver app.js) */
+    .reveal {
+        @apply opacity-0 translate-y-6 transition duration-700 ease-out;
+    }
+
+    .reveal.is-visible {
+        @apply opacity-100 translate-y-0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        @apply opacity-100 translate-y-0 transition-none;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}

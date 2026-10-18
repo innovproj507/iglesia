@@ -1,9 +1,15 @@
-<?php $this->insert('partials/header', get_defined_vars()) ?>
+<?php $this->insert('partials/header', array_merge(get_defined_vars(), ['pageTitle' => 'Página no encontrada'])) ?>
 
-<div class="max-w-xl mx-auto px-4 py-24 text-center">
-    <h1 class="text-4xl font-bold text-gray-900 mb-4">404</h1>
-    <p class="text-gray-500 mb-6">No pudimos encontrar la página que buscas.</p>
-    <a href="/" class="text-brand-700 font-medium">Volver al inicio</a>
-</div>
+<section class="container-site grid min-h-[60vh] place-items-center py-24 text-center">
+    <div>
+        <p class="font-serif text-8xl italic text-brand-200">404</p>
+        <h1 class="mt-4 text-3xl font-bold text-gray-900">No encontramos esta página</h1>
+        <p class="mx-auto mt-3 max-w-md text-gray-500">Puede que se haya movido o ya no exista. Pero hay mucho más por descubrir.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+            <a href="/" class="btn-primary">Volver al inicio</a>
+            <a href="/sermones" class="btn-ghost">Ver sermones</a>
+        </div>
+    </div>
+</section>
 
 <?php $this->insert('partials/footer', get_defined_vars()) ?>

@@ -26,18 +26,39 @@ class PostsController extends AdminController
     public function index(Request $request): Response
     {
         $type = (string) $request->input('type', 'post');
-        $postType = $this->postTypes->get($type);
+        $search = trim((string) $request->input('q', ''));
+        $status = (string) $request->input('status', '');
+        $status = in_array($status, ['draft', 'published', 'scheduled'], true) ? $status : null;
+        $isAll = $type === 'all';
+        $postType = $isAll ? null : $this->postTypes->get($type);
         $user = $this->auth->user();
+        $label = $isAll ? 'Todo el contenido' : ($postType?->label ?? ucfirst($type));
 
         $authorId = $user && !$user->can('edit_others_posts') ? $user->id : null;
-        $result = $this->posts->paginate($type, (int) $request->input('page', 1), 20, null, $authorId);
+        $result = $this->posts->paginate($isAll ? '' : $type, (int) $request->input('page', 1), 20, $status, $authorId, $search);
 
         return $this->render('posts/index', [
-            'title' => $postType?->label ?? ucfirst($type),
+            'title' => $search !== '' ? 'Resultados para “' . $search . '”' : $label,
             'postType' => $type,
-            'postTypeLabel' => $postType?->label ?? ucfirst($type),
+            'postTypeLabel' => $label,
             'posts' => $result['items'],
-        ], $type === 'page' ? 'pages' : 'posts');
+            'total' => $result['total'],
+            'search' => $search,
+            'status' => $status,
+            'postTypes' => $this->postTypes,
+        ], $isAll ? 'dashboard' : $this->menuSlug($type));
+    }
+
+    /** Ítem del menú lateral que corresponde a un tipo de contenido. */
+    private function menuSlug(string $type): string
+    {
+        foreach ($this->adminMenu->items($this->auth->user()) as $item) {
+            if (str_contains($item['url'], 'type=' . $type)) {
+                return $item['slug'];
+            }
+        }
+
+        return 'posts';
     }
 
     public function create(Request $request): Response
@@ -45,10 +66,10 @@ class PostsController extends AdminController
         $type = (string) $request->input('type', 'post');
 
         return $this->render('posts/edit', [
-            'title' => 'Nueva entrada',
+            'title' => 'Crear ' . mb_strtolower($this->postTypes->get($type)?->labelSingular ?? $type),
             'postType' => $type,
             'post' => null,
-        ], $type === 'page' ? 'pages' : 'posts');
+        ], $this->menuSlug($type));
     }
 
     public function edit(Request $request): Response
@@ -64,7 +85,7 @@ class PostsController extends AdminController
             'title' => 'Editar: ' . $post['title'],
             'postType' => $post['post_type'],
             'post' => $post,
-        ], $post['post_type'] === 'page' ? 'pages' : 'posts');
+        ], $this->menuSlug($post['post_type']));
     }
 
     public function store(Request $request): Response

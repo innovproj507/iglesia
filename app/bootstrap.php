@@ -33,6 +33,7 @@ $config = is_file($configFile) ? require $configFile : null;
 
 if ($config) {
     $app->loadConfig($config);
+    date_default_timezone_set($config['app']['timezone'] ?? 'UTC');
 
     $container->singleton(Connection::class, fn () => new Connection($config['db']));
     $container->singleton(OptionsRepository::class, fn (Container $c) => new OptionsRepository($c->make(Connection::class)));

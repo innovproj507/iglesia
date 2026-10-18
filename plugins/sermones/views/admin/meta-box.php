@@ -1,31 +1,29 @@
 <?php
 $meta = app(\Cms\Content\PostRepository::class)->allMeta((int) $post['id']);
 ?>
-<div class="bg-white rounded-lg shadow p-5 space-y-4">
-    <h3 class="font-medium text-sm text-gray-700">Detalles del sermón</h3>
-    <div>
-        <label class="block text-sm font-medium mb-1">Predicador</label>
-        <input type="text" name="predicador" value="<?= $this->e($meta['predicador'] ?? '') ?>"
-               class="w-full border rounded px-3 py-2 text-sm">
+<div class="card space-y-5 p-6">
+    <h3 class="card-title">Detalles del sermón</h3>
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+            <label class="label">Predicador</label>
+            <input type="text" name="predicador" value="<?= $this->e($meta['predicador'] ?? '') ?>" class="input">
+        </div>
+        <div>
+            <label class="label">Fecha de servicio</label>
+            <input type="date" name="fecha_servicio" value="<?= $this->e($meta['fecha_servicio'] ?? '') ?>" class="input">
+        </div>
     </div>
     <div>
-        <label class="block text-sm font-medium mb-1">Serie</label>
-        <input type="text" name="serie" placeholder="Ej. Fe en tiempos difíciles"
-               class="w-full border rounded px-3 py-2 text-sm">
+        <label class="label">Serie</label>
+        <input type="text" name="serie" placeholder="Ej. Fe en tiempos difíciles" class="input">
     </div>
     <div>
-        <label class="block text-sm font-medium mb-1">Fecha de servicio</label>
-        <input type="date" name="fecha_servicio" value="<?= $this->e($meta['fecha_servicio'] ?? '') ?>"
-               class="w-full border rounded px-3 py-2 text-sm">
+        <label class="label">Video (enlace de YouTube)</label>
+        <input type="text" name="video_url" value="<?= $this->e($meta['video_url'] ?? '') ?>" placeholder="https://www.youtube.com/watch?v=…" class="input">
+        <p class="hint">Pega el enlace normal del video; la miniatura y el reproductor se generan solos.</p>
     </div>
     <div>
-        <label class="block text-sm font-medium mb-1">URL de audio</label>
-        <input type="text" name="audio_url" value="<?= $this->e($meta['audio_url'] ?? '') ?>"
-               class="w-full border rounded px-3 py-2 text-sm">
-    </div>
-    <div>
-        <label class="block text-sm font-medium mb-1">URL de video (YouTube/Vimeo embed)</label>
-        <input type="text" name="video_url" value="<?= $this->e($meta['video_url'] ?? '') ?>"
-               class="w-full border rounded px-3 py-2 text-sm">
+        <label class="label">Audio (URL)</label>
+        <input type="text" name="audio_url" value="<?= $this->e($meta['audio_url'] ?? '') ?>" class="input">
     </div>
 </div>

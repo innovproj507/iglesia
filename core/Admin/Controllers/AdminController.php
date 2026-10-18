@@ -20,7 +20,10 @@ abstract class AdminController
     {
         $user = $this->auth->user();
 
-        $html = $this->view->render('admin::' . $template, array_merge($data, [
+        // Los plugins pueden pasar su propia vista con espacio de nombres (ej. "seo::admin/settings").
+        $name = str_contains($template, '::') ? $template : 'admin::' . $template;
+
+        $html = $this->view->render($name, array_merge($data, [
             'currentUser' => $user,
             'menuItems' => $this->adminMenu->items($user),
             'activeMenu' => $activeMenu,

@@ -1,28 +1,26 @@
-<?php $this->layout('admin::layout', ['title' => $title, 'currentUser' => $currentUser, 'menuItems' => $menuItems, 'activeMenu' => $activeMenu]) ?>
+<?php $this->layout('admin::layout', ['title' => $title, 'currentUser' => $currentUser, 'menuItems' => $menuItems, 'activeMenu' => $activeMenu, 'eyebrow' => 'Extensiones']) ?>
+<?php $icon = fn (string $name, string $class = 'h-5 w-5') => $this->fetch('admin::partials/icon', ['name' => $name, 'class' => $class]); ?>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
     <?php foreach ($manifests as $slug => $manifest): ?>
         <?php $active = in_array($slug, $activeSlugs, true); ?>
-        <div class="bg-white rounded-lg shadow p-5">
-            <div class="flex justify-between items-start mb-2">
-                <div>
-                    <h3 class="font-medium"><?= $this->e($manifest->name) ?></h3>
+        <div class="card flex flex-col p-6">
+            <div class="mb-4 flex items-start gap-4">
+                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl <?= $active ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10' : 'bg-gray-100 text-gray-400 dark:bg-slate-800' ?>"><?= $icon('puzzle', 'h-6 w-6') ?></span>
+                <div class="flex-1">
+                    <h3 class="font-bold text-gray-900 dark:text-white"><?= $this->e($manifest->name) ?></h3>
                     <p class="text-xs text-gray-400">v<?= $this->e($manifest->version) ?> · <?= $this->e($manifest->author) ?></p>
                 </div>
-                <span class="text-xs px-2 py-1 rounded <?= $active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' ?>">
-                    <?= $active ? 'Activo' : 'Inactivo' ?>
-                </span>
+                <span class="<?= $active ? 'badge-green' : 'badge-gray' ?>"><?= $active ? 'Activo' : 'Inactivo' ?></span>
             </div>
-            <p class="text-sm text-gray-600 mb-4"><?= $this->e($manifest->description) ?></p>
+            <p class="mb-5 flex-1 text-sm text-gray-600 dark:text-slate-400"><?= $this->e($manifest->description) ?></p>
             <form method="post" action="/admin/plugins/<?= $this->e($slug) ?>/<?= $active ? 'deactivate' : 'activate' ?>">
                 <?= csrf_field() ?>
-                <button type="submit" class="text-sm px-4 py-2 rounded <?= $active ? 'bg-red-50 text-red-700 hover:bg-red-100' : 'bg-brand-700 text-white hover:bg-brand-800' ?>">
-                    <?= $active ? 'Desactivar' : 'Activar' ?>
-                </button>
+                <button type="submit" class="<?= $active ? 'btn-danger' : 'btn-primary' ?> w-full"><?= $active ? 'Desactivar' : 'Activar' ?></button>
             </form>
         </div>
     <?php endforeach; ?>
     <?php if (empty($manifests)): ?>
-        <p class="text-gray-400 col-span-full text-center py-6">No hay plugins instalados en /plugins.</p>
+        <p class="col-span-full py-16 text-center text-gray-400">No hay plugins instalados en /plugins.</p>
     <?php endif; ?>
 </div>

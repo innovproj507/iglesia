@@ -28,6 +28,14 @@ class SettingsController extends AdminController
             'tagline' => $this->options->get('tagline', ''),
             'serviceTimes' => option_array('service_times'),
             'socialLinks' => option_array('social_links'),
+            'liveUrl' => $this->options->get('live_url', ''),
+            'heroImage' => $this->options->get('hero_image', ''),
+            'welcomeText' => $this->options->get('welcome_text', ''),
+            'address' => $this->options->get('address', ''),
+            'logo' => $this->options->get('logo', ''),
+            'phone' => $this->options->get('phone', ''),
+            'email' => $this->options->get('email', ''),
+            'whatsapp' => (string) $this->options->get('whatsapp', ''),
         ], 'settings');
     }
 
@@ -36,6 +44,10 @@ class SettingsController extends AdminController
         $this->options->set('site_title', (string) $request->input('site_title', ''));
         $this->options->set('tagline', (string) $request->input('tagline', ''));
 
+        foreach (['live_url', 'hero_image', 'welcome_text', 'address', 'logo', 'phone', 'email', 'whatsapp'] as $key) {
+            $this->options->set($key, trim((string) $request->input($key, '')));
+        }
+
         $serviceTimes = array_filter(array_map('trim', explode("\n", (string) $request->input('service_times', ''))));
         $this->options->set('service_times', array_values($serviceTimes));
 
@@ -43,6 +55,7 @@ class SettingsController extends AdminController
             'facebook' => (string) $request->input('facebook', ''),
             'instagram' => (string) $request->input('instagram', ''),
             'youtube' => (string) $request->input('youtube', ''),
+            'x' => (string) $request->input('x', ''),
         ];
         $this->options->set('social_links', array_filter($socialLinks));
 

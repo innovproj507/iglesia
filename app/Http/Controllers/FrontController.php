@@ -25,8 +25,14 @@ class FrontController
     {
         $template = $this->themes->resolveHome() ?? '404';
 
-        $recentPosts = $this->posts->paginate('post', 1, 3, 'published')['items'];
-        $recentSermons = $this->posts->paginate('sermon', 1, 3, 'published')['items'];
+        $recentPosts = $this->posts->paginate('post', 1, 6, 'published')['items'];
+        $recentSermons = array_map(
+            fn ($sermon) => array_merge($sermon, array_intersect_key(
+                $this->posts->allMeta((int) $sermon['id']),
+                array_flip(['predicador', 'video_url', 'audio_url', 'fecha_servicio'])
+            )),
+            $this->posts->paginate('sermon', 1, 4, 'published')['items']
+        );
 
         return Response::html($this->view->render($template, array_merge($this->sharedData(), [
             'recentPosts' => $recentPosts,

@@ -23,9 +23,13 @@ class PostRepository
         ]) ?: null;
     }
 
-    public function paginate(string $postType, int $page = 1, int $perPage = 10, ?string $status = null, ?int $authorId = null): array
+    public function paginate(string $postType, int $page = 1, int $perPage = 10, ?string $status = null, ?int $authorId = null, ?string $search = null): array
     {
-        $where = ['post_type' => $postType];
+        $where = $postType !== '' ? ['post_type' => $postType] : [];
+
+        if ($search !== null && $search !== '') {
+            $where['title[~]'] = $search;
+        }
 
         if ($status) {
             $where['status'] = $status;

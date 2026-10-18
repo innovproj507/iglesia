@@ -9,8 +9,8 @@
 !/storage/sessions/.gitkeep
 /public/uploads/*
 !/public/uploads/.gitkeep
-/public/assets/theme/*.css
-/public/assets/theme/*.js
-/public/assets/admin/*.css
+# Fotos base del sitio (las sube el seeder); el resto de uploads no se versiona
+!/public/uploads/metropolitana/
+# CSS/JS compilados se versionan: el hosting compartido no tiene Node para compilarlos
 .DS_Store
 Thumbs.db
